@@ -45,7 +45,6 @@
     .valentine-image {
       width: 12rem;
       height: 12rem;
-      height: auto;
       margin-bottom: 20px;
       border-radius: 5px;
     }
@@ -141,7 +140,6 @@
     .success-image {
       height: 15rem;
       width: 15rem;
-      height: auto;
       border-radius: 10px;
       margin-bottom: 20px;
     }
@@ -150,7 +148,6 @@
       display: none;
       height: 15rem;
       width: 15rem;
-      height: auto;
       border-radius: 10px;
       margin-bottom: 20px;
     }
@@ -266,7 +263,8 @@
     <!-- Update the src to your local image generated from Apple's Image Playground -->
     <img src="./prat.png" alt="Valentine" class="valentine-image">
     <h1>Be my Valentine?</h1>
-    <button class="btn btn-green" onclick="yesClicked()">Yes</button>
+    <!-- Added id "yesButton" to the Yes button -->
+    <button id="yesButton" class="btn btn-green" onclick="yesClicked()">Yes</button>
     <button id="noButton" class="btn btn-red" onclick="noClicked()">No</button>
   </div>
   
@@ -275,7 +273,7 @@
     <!-- Fireworks Container -->
     <div id="fireworksContainer"></div>
     <div class="heart-outline-container">
-        <!-- Placeholder image for the success screen -->
+        <!-- Placeholder images for the success screen -->
         <img onclick="image1Clicked()" src="./neha.png" alt="Congratulations" class="success-image" id="success-image">
         <img src="./IMG_6851.png" alt="Congratulations" class="success-image-alt" id="success-image-alt">
         <h2>Yeeee Love you My Queen</h2>
@@ -287,11 +285,14 @@
                      C73,60,108,30,88,7
                      C78,-7,58,-7,49,7
                      Z" />
-          </svg>
+        </svg>
     </div>
   </div>
   
   <script>
+    // Global variable for the Yes button's scale
+    let yesScale = 1;
+
     // Array of messages for the "No" button
     const noMessages = [
       "Dun doit",
@@ -313,6 +314,10 @@
       const noButton = document.getElementById("noButton");
       noButton.textContent = noMessages[noIndex];
       noIndex = (noIndex + 1) % noMessages.length;
+      
+      // Increase the size of the Yes button each time No is pressed
+      yesScale *= 1.1; // Increase by 10%
+      document.getElementById("yesButton").style.transform = `scale(${yesScale})`;
     }
 
     function image1Clicked(){
@@ -321,12 +326,6 @@
         document.getElementById("success-image-alt").classList.add("active");
     }
 
-    // function image2Clicked(){
-    //     document.getElementById("success-image-alt").style.display = "none";
-    //     document.getElementById("success-image-alt").classList.remove("active");
-    //     document.getElementById("success-image").classList.add("active");
-    // }
-    
     // Bouncing Hearts Code (Background Animation)
     const hearts = [];
     const numberOfHearts = 5;
@@ -348,7 +347,7 @@
       heart.style.left = posX + "px";
       heart.style.top = posY + "px";
       heartsContainer.appendChild(heart);
-      // Random velocity between -3 and 3 pixels per frame (avoid 0 velocity)
+      // Random velocity between -2 and 2 pixels per frame
       let vx = (Math.random() * 4 - 2) || 1;
       let vy = (Math.random() * 4 - 2) || 1;
       const radius = ((heartWidth + heartHeight) / 4);
@@ -378,7 +377,7 @@
       heart.style.left = posX + "px";
       heart.style.top = posY + "px";
       heartsContainer.appendChild(heart);
-      // Random velocity between -3 and 3 pixels per frame (avoid 0 velocity)
+      // Random velocity between -2 and 2 pixels per frame
       let vx = (Math.random() * 4 - 2) || 1;
       let vy = (Math.random() * 4 - 2) || 1;
       const radius = ((heartWidth + heartHeight) / 4);
@@ -484,7 +483,7 @@
         spark.style.setProperty("--dx", dx);
         spark.style.setProperty("--dy", dy);
         fireworksContainer.appendChild(spark);
-        setTimeout(() => { spark.remove(); }, 800);
+        setTimeout(() => { spark.remove(); }, 1000);
       }
     }
     
