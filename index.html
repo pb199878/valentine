@@ -39,6 +39,7 @@
       background-color: #ffffff;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       z-index: 1;
+      /* We'll use getBoundingClientRect() on this container for collision */
     }
     
     /* Style for the image above the Valentine box */
@@ -100,11 +101,11 @@
     .success-screen.active {
       display: flex; /* Shown when active */
     }
-
+    
     /* Container that holds the success content and animated heart outline */
     .heart-outline-container {
       position: static;
-      padding: 40px; /* Extra padding to ensure the outline doesn't overlap the content */
+      padding: 40px; /* Extra padding so the outline doesn't overlap the content */
       display: inline-block;
     }
     
@@ -122,7 +123,7 @@
       fill: none;
       stroke-dasharray: 1000;
       stroke-dashoffset: 1000;
-      /* Apply two animations: one to draw the heart slowly and another for a sizzling/flicker effect */
+      /* Two animations: one draws the heart slowly and one gives a sizzling effect */
       animation: drawHeart 10s ease-in-out forwards, sizzle 2s infinite;
     }
 
@@ -130,7 +131,6 @@
       to { stroke-dashoffset: 0; }
     }
     
-    /* Sizzle effect: subtle flicker in stroke color and drop-shadow */
     @keyframes sizzle {
       0% { stroke: red; filter: drop-shadow(0 0 2px red); }
       50% { stroke: darkred; filter: drop-shadow(0 0 5px orange); }
@@ -153,7 +153,7 @@
     }
 
     .success-image-alt.active {
-      display: flex; /* Shown when active */
+      display: flex;
     }
 
     /* Fireworks Container – covers the entire success screen */
@@ -167,7 +167,7 @@
       overflow: hidden;
     }
     
-    /* Rocket – rises from the bottom */
+    /* Rocket – rises from the bottom with a glowing effect */
     .firework-rocket {
       position: absolute;
       bottom: 0;
@@ -183,7 +183,7 @@
       100% { transform: translateY(-50vh); opacity: 0; }
     }
     
-    /* Spark – used for explosion */
+    /* Spark – explosion particle with scaling and fading */
     .spark {
       position: absolute;
       width: 4px;
@@ -226,12 +226,11 @@
       transform-origin: 100% 100%;
     }
     
-    /* Picture Heart – 50% larger with background images and the same heart shape mask */
+    /* Picture Heart – 50% larger with background images and same heart shape mask */
     .picture-heart {
       position: absolute;
       background-size: cover;
       background-position: center;
-      /* Use the SVG mask defined below to get the same shape as the red hearts */
       mask: url(#heartMask);
       -webkit-mask: url(#heartMask);
       border: 2px solid #fff;
@@ -244,13 +243,12 @@
   <svg width="0" height="0" style="position:absolute;">
     <defs>
       <mask id="heartMask" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="90">
-        <!-- Heart shape path -->
         <path d="M49,7
-        C40,-7,20,-7,10,7
-        C-10,30,25,60,49,84
-        C73,60,108,30,88,7
-        C78,-7,58,-7,49,7
-        Z" fill="white"/>
+                C40,-7,20,-7,10,7
+                C-10,30,25,60,49,84
+                C73,60,108,30,88,7
+                C78,-7,58,-7,49,7
+                Z" fill="white"/>
       </mask>
     </defs>
   </svg>    
@@ -260,40 +258,35 @@
   
   <!-- Main Valentine Screen -->
   <div class="container" id="mainContainer">
-    <!-- Update the src to your local image generated from Apple's Image Playground -->
     <img src="./prat.png" alt="Valentine" class="valentine-image">
     <h1>Be my Valentine?</h1>
-    <!-- Added id "yesButton" to the Yes button -->
     <button id="yesButton" class="btn btn-green" onclick="yesClicked()">Yes</button>
     <button id="noButton" class="btn btn-red" onclick="noClicked()">No</button>
   </div>
   
   <!-- Success Screen -->
   <div class="success-screen" id="successScreen">
-    <!-- Fireworks Container -->
     <div id="fireworksContainer"></div>
     <div class="heart-outline-container">
-        <!-- Placeholder images for the success screen -->
-        <img onclick="image1Clicked()" src="./neha.png" alt="Congratulations" class="success-image" id="success-image">
-        <img src="./IMG_6851.png" alt="Congratulations" class="success-image-alt" id="success-image-alt">
-        <h2>Yeeee Love you My Queen</h2>
-        <!-- Inline SVG for the animated heart outline with sizzling effect -->
-        <svg viewBox="-10 -7 118 91" preserveAspectRatio="xMidYMid meet">
-            <path d="M49,7
-                     C40,-7,20,-7,10,7
-                     C-10,30,25,60,49,84
-                     C73,60,108,30,88,7
-                     C78,-7,58,-7,49,7
-                     Z" />
-        </svg>
+      <img src="./neha.png" alt="Congratulations" class="success-image" id="success-image" onclick="image1Clicked()">
+      <img src="./IMG_6851.png" alt="Congratulations" class="success-image-alt" id="success-image-alt">
+      <h2>Yeeee Love you My Queen</h2>
+      <svg viewBox="-10 -7 118 91" preserveAspectRatio="xMidYMid meet">
+        <path d="M49,7
+                C40,-7,20,-7,10,7
+                C-10,30,25,60,49,84
+                C73,60,108,30,88,7
+                C78,-7,58,-7,49,7
+                Z" />
+      </svg>
     </div>
   </div>
   
   <script>
-    // Global variable for the Yes button's scale
+    // Global variable for scaling the Yes button.
     let yesScale = 1;
 
-    // Array of messages for the "No" button
+    // Array of messages for the "No" button.
     const noMessages = [
       "Dun doit",
       "Please dun doit",
@@ -304,10 +297,9 @@
     let noIndex = 0;
     
     function yesClicked() {
-      // Hide the main container and show the success screen.
       document.getElementById("mainContainer").style.display = "none";
       document.getElementById("successScreen").classList.add("active");
-      startFireworks(); // Start fireworks when success screen is active
+      startFireworks();
     }
     
     function noClicked() {
@@ -315,17 +307,17 @@
       noButton.textContent = noMessages[noIndex];
       noIndex = (noIndex + 1) % noMessages.length;
       
-      // Increase the size of the Yes button each time No is pressed
-      yesScale *= 1.1; // Increase by 10%
+      // Increase the size of the Yes button by 10% each time No is pressed.
+      yesScale *= 1.1;
       document.getElementById("yesButton").style.transform = `scale(${yesScale})`;
     }
 
     function image1Clicked(){
-        document.getElementById("success-image").style.display = "none";
-        document.getElementById("success-image").classList.remove("active");
-        document.getElementById("success-image-alt").classList.add("active");
+      document.getElementById("success-image").style.display = "none";
+      document.getElementById("success-image").classList.remove("active");
+      document.getElementById("success-image-alt").classList.add("active");
     }
-
+    
     // Bouncing Hearts Code (Background Animation)
     const hearts = [];
     const numberOfHearts = 5;
@@ -334,7 +326,6 @@
     function createHeart() {
       const heart = document.createElement("div");
       heart.className = "heart";
-      // Random scale between 0.75 and 1.25 for regular hearts
       const scale = Math.random() * 0.5 + 0.75;
       const heartWidth = 30 * scale;
       const heartHeight = 30 * scale;
@@ -347,7 +338,6 @@
       heart.style.left = posX + "px";
       heart.style.top = posY + "px";
       heartsContainer.appendChild(heart);
-      // Random velocity between -2 and 2 pixels per frame
       let vx = (Math.random() * 4 - 2) || 1;
       let vy = (Math.random() * 4 - 2) || 1;
       const radius = ((heartWidth + heartHeight) / 4);
@@ -358,13 +348,13 @@
       createHeart();
     }
     
-    // Create 5 additional picture hearts (50% larger) with unique images.
+    // Create additional picture hearts.
     const pictureURLs = ['./IMG_7743.png', 'IMG_2474.png', 'IMG_3480.png', 'IMG_7644.png', 'IMG_6851.png', 'IMG_6486.png', 'IMG_5069.png', 'IMG_4927.png'];
+    
     function createPictureHeart(imageURL) {
       const heart = document.createElement("div");
       heart.className = "picture-heart";
-      // Multiply base dimensions (50x45) by 1.5 for picture hearts.
-      const scale = 1;
+      const scale = 1;  // Fixed scale for picture hearts.
       const heartWidth = 100 * scale;
       const heartHeight = 90 * scale;
       heart.style.width = heartWidth + "px";
@@ -377,7 +367,6 @@
       heart.style.left = posX + "px";
       heart.style.top = posY + "px";
       heartsContainer.appendChild(heart);
-      // Random velocity between -2 and 2 pixels per frame
       let vx = (Math.random() * 4 - 2) || 1;
       let vy = (Math.random() * 4 - 2) || 1;
       const radius = ((heartWidth + heartHeight) / 4);
@@ -391,15 +380,17 @@
     function animateHearts() {
       const maxWidth = window.innerWidth;
       const maxHeight = window.innerHeight;
+      const containerRect = document.getElementById("mainContainer").getBoundingClientRect();
       
-      // Update positions and check for edge collisions
       hearts.forEach(heartObj => {
+        // Update heart position based on velocity.
         heartObj.posX += heartObj.vx;
         heartObj.posY += heartObj.vy;
         heartObj.width = 50 * heartObj.scale;
         heartObj.height = 45 * heartObj.scale;
         heartObj.radius = ((heartObj.width + heartObj.height) / 4);
         
+        // Bounce off window edges.
         if (heartObj.posX <= 0 || heartObj.posX + heartObj.width >= maxWidth) {
           heartObj.vx *= -1;
           heartObj.posX = Math.max(0, Math.min(heartObj.posX, maxWidth - heartObj.width));
@@ -408,11 +399,48 @@
           heartObj.vy *= -1;
           heartObj.posY = Math.max(0, Math.min(heartObj.posY, maxHeight - heartObj.height));
         }
+        
+        // Collision with the Valentine box (main container).
+        // Get heart bounds.
+        const heartLeft = heartObj.posX;
+        const heartRight = heartObj.posX + heartObj.width;
+        const heartTop = heartObj.posY;
+        const heartBottom = heartObj.posY + heartObj.height;
+        
+        // If heart intersects container.
+        if (
+          heartRight > containerRect.left &&
+          heartLeft < containerRect.right &&
+          heartBottom > containerRect.top &&
+          heartTop < containerRect.bottom
+        ) {
+          // Compute overlap on both axes.
+          const overlapX = Math.min(heartRight, containerRect.right) - Math.max(heartLeft, containerRect.left);
+          const overlapY = Math.min(heartBottom, containerRect.bottom) - Math.max(heartTop, containerRect.top);
+          // Bounce in the direction of least penetration.
+          if (overlapX < overlapY) {
+            heartObj.vx *= -1;
+            // Adjust position so heart is outside the container.
+            if (heartLeft < containerRect.left) {
+              heartObj.posX = containerRect.left - heartObj.width;
+            } else {
+              heartObj.posX = containerRect.right;
+            }
+          } else {
+            heartObj.vy *= -1;
+            if (heartTop < containerRect.top) {
+              heartObj.posY = containerRect.top - heartObj.height;
+            } else {
+              heartObj.posY = containerRect.bottom;
+            }
+          }
+        }
+        
         heartObj.element.style.left = heartObj.posX + "px";
         heartObj.element.style.top = heartObj.posY + "px";
       });
       
-      // Check for collisions between hearts and swap velocities
+      // Existing collision detection between hearts.
       for (let i = 0; i < hearts.length; i++) {
         for (let j = i + 1; j < hearts.length; j++) {
           const heartA = hearts[i];
@@ -452,14 +480,12 @@
     const fireworksContainer = document.getElementById("fireworksContainer");
     let fireworksInterval;
     
-    // Launch a rocket firework from the bottom at a random horizontal position.
     function launchFirework() {
       const rocket = document.createElement("div");
       rocket.className = "firework-rocket";
-      rocket.style.left = Math.random() * 80 + 10 + "vw"; // between 10vw and 90vw
+      rocket.style.left = Math.random() * 80 + 10 + "vw";
       fireworksContainer.appendChild(rocket);
       
-      // After the rocket's ascent (1.5s), get its final position and create the explosion.
       setTimeout(() => {
         const rect = rocket.getBoundingClientRect();
         const explosionX = rect.left + rect.width / 2;
@@ -469,7 +495,6 @@
       }, 1500);
     }
     
-    // Create explosion sparks at a given (x, y) position.
     function createExplosionAt(x, y) {
       for (let i = 0; i < 20; i++) {
         const spark = document.createElement("div");
@@ -487,7 +512,6 @@
       }
     }
     
-    // Start launching fireworks and stop after 10 seconds.
     function startFireworks() {
       fireworksInterval = setInterval(() => {
         if (document.getElementById("successScreen").classList.contains("active")) {
