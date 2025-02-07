@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Be My Valentine?</title>
-  <!-- Include a vibrant, on-theme Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <style>
     /* Global Styles */
@@ -11,7 +10,7 @@
       margin: 0;
       padding: 0;
       background: #fff0f0;
-      font-family: Arial, sans-serif;
+      font-family: 'Pacifico', cursive;
       overflow: hidden;
       display: flex;
       align-items: center;
@@ -43,7 +42,6 @@
       z-index: 1;
     }
     
-    /* Style for the image above the Valentine box */
     .valentine-image {
       width: 12rem;
       height: 12rem;
@@ -51,12 +49,10 @@
       border-radius: 5px;
     }
     
-    /* Vibrant, on-theme headings using Pacifico */
-    h1, h2 {
-      font-family: 'Pacifico', cursive;
+    h1 {
+      margin-bottom: 20px;
       color: #d10047;
       text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-      margin-bottom: 20px;
     }
     
     .btn {
@@ -67,7 +63,6 @@
       font-size: 16px;
       cursor: pointer;
       transition: transform 0.1s ease;
-      /* Use a vibrant font for buttons as well */
       font-family: 'Pacifico', cursive;
     }
     
@@ -85,9 +80,9 @@
       color: white;
     }
     
-    /* Success Screen (hidden by default) */
+    /* Success Screen */
     .success-screen {
-      display: none; /* Hidden by default */
+      display: none;
       position: absolute;
       top: 0;
       left: 0;
@@ -105,13 +100,13 @@
     }
     
     .success-screen.active {
-      display: flex; /* Shown when active */
+      display: flex;
     }
-
-    /* Container that holds the success content and animated heart outline */
+    
+    /* Container for success content and heart outline */
     .heart-outline-container {
       position: static;
-      padding: 40px; /* Extra padding so the outline doesn't overlap the content */
+      padding: 40px;
       display: inline-block;
     }
     
@@ -129,10 +124,9 @@
       fill: none;
       stroke-dasharray: 1000;
       stroke-dashoffset: 1000;
-      /* Two animations: draw the outline and add a sizzling effect */
       animation: drawHeart 10s ease-in-out forwards, sizzle 2s infinite;
     }
-
+    
     @keyframes drawHeart {
       to { stroke-dashoffset: 0; }
     }
@@ -142,14 +136,14 @@
       50% { stroke: darkred; filter: drop-shadow(0 0 5px orange); }
       100% { stroke: red; filter: drop-shadow(0 0 2px red); }
     }
-
+    
     .success-image {
       height: 15rem;
       width: 15rem;
       border-radius: 10px;
       margin-bottom: 20px;
     }
-
+    
     .success-image-alt {
       display: none;
       height: 15rem;
@@ -157,12 +151,12 @@
       border-radius: 10px;
       margin-bottom: 20px;
     }
-
+    
     .success-image-alt.active {
       display: flex;
     }
-
-    /* Fireworks Container – covers the entire success screen */
+    
+    /* Fireworks Container */
     #fireworksContainer {
       position: absolute;
       top: 0;
@@ -173,7 +167,7 @@
       overflow: hidden;
     }
     
-    /* Rocket – rises from the bottom */
+    /* Rocket */
     .firework-rocket {
       position: absolute;
       bottom: 0;
@@ -181,6 +175,7 @@
       height: 20px;
       background: rgb(229, 82, 33);
       animation: rocketRise 1.5s ease-out forwards;
+      will-change: transform;
     }
     
     @keyframes rocketRise {
@@ -189,7 +184,7 @@
       100% { transform: translateY(-50vh); opacity: 0; }
     }
     
-    /* Spark – used for explosion */
+    /* Spark */
     .spark {
       position: absolute;
       width: 4px;
@@ -198,6 +193,7 @@
       border-radius: 50%;
       opacity: 1;
       animation: sparkExplosion 2s ease-out forwards;
+      will-change: transform;
     }
     
     @keyframes sparkExplosion {
@@ -205,11 +201,12 @@
       100% { transform: translate(var(--dx), var(--dy)); opacity: 0; }
     }
     
-    /* Regular Heart Shape (using pseudo-elements) */
+    /* Regular Heart (using pseudo-elements) */
     .heart {
       position: absolute;
       width: 50px;
       height: 45px;
+      will-change: transform;
     }
     .heart::before,
     .heart::after {
@@ -232,16 +229,27 @@
       transform-origin: 100% 100%;
     }
     
-    /* Picture Heart – bigger picture hearts using a bigger mask */
+    /* Picture Heart – using a larger mask for bigger picture hearts */
     .picture-heart {
       position: absolute;
-      background-size: cover;
-      background-position: center;
-      /* Use the new larger mask for picture hearts */
+      will-change: transform;
+      background: transparent;
       mask: url(#heartMaskBig);
       -webkit-mask: url(#heartMaskBig);
       border: 2px solid #fff;
       box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    }
+    .picture-heart::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: var(--bg);
+      background-size: cover;
+      background-position: center;
+      transform: translateY(-10px); /* Shift the image upward */
     }
   </style>
 </head>
@@ -249,7 +257,7 @@
   <!-- Inline SVG definitions for heart masks -->
   <svg width="0" height="0" style="position:absolute;">
     <defs>
-      <!-- Original mask for the red hearts -->
+      <!-- Original mask for red hearts -->
       <mask id="heartMask" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="90">
         <path d="M49,7
                  C40,-7,20,-7,10,7
@@ -258,7 +266,7 @@
                  C78,-7,58,-7,49,7
                  Z" fill="white"/>
       </mask>
-      <!-- New mask for picture hearts (scaled by 2) -->
+      <!-- Larger mask for picture hearts -->
       <mask id="heartMaskBig" maskUnits="userSpaceOnUse" x="0" y="0" width="200" height="180">
         <path d="M98,14
                  C80,-14,40,-14,20,14
@@ -335,9 +343,9 @@
         document.getElementById("success-image-alt").classList.add("active");
     }
 
-    // Bouncing Hearts Code (Background Animation)
+    // Bouncing Hearts Code (Using translate3d for GPU acceleration)
     const hearts = [];
-    const numberOfHearts = 10;
+    const numberOfHearts = 5;
     const heartsContainer = document.getElementById("hearts-container");
     
     function createHeart() {
@@ -348,17 +356,18 @@
       const heartHeight = 30 * scale;
       heart.style.width = heartWidth + "px";
       heart.style.height = heartHeight + "px";
+      // Set will-change for smoother animations.
+      heart.style.willChange = "transform";
       const containerWidth = window.innerWidth;
       const containerHeight = window.innerHeight;
       let posX = Math.random() * (containerWidth - heartWidth);
       let posY = Math.random() * (containerHeight - heartHeight);
-      heart.style.left = posX + "px";
-      heart.style.top = posY + "px";
+      // Use translate3d for initial position.
+      heart.style.transform = `translate3d(${posX}px, ${posY}px, 0)`;
       heartsContainer.appendChild(heart);
       let vx = (Math.random() * 4 - 2) || 1;
       let vy = (Math.random() * 4 - 2) || 1;
-      const radius = ((heartWidth + heartHeight) / 4);
-      hearts.push({ element: heart, posX, posY, vx, vy, scale, width: heartWidth, height: heartHeight, radius });
+      hearts.push({ element: heart, posX, posY, vx, vy, scale, width: heartWidth, height: heartHeight });
     }
     
     for (let i = 0; i < numberOfHearts; i++) {
@@ -371,24 +380,23 @@
     function createPictureHeart(imageURL) {
       const heart = document.createElement("div");
       heart.className = "picture-heart";
-      // Use a fixed scale factor of 2 for bigger picture hearts.
+      heart.style.willChange = "transform";
       const scale = 2;
       const heartWidth = 100 * scale;  // 200px wide
       const heartHeight = 90 * scale;  // 180px high
       heart.style.width = heartWidth + "px";
       heart.style.height = heartHeight + "px";
-      heart.style.backgroundImage = `url(${imageURL})`;
+      // Set the background image via CSS variable.
+      heart.style.setProperty('--bg', `url(${imageURL})`);
       const containerWidth = window.innerWidth;
       const containerHeight = window.innerHeight;
       let posX = Math.random() * (containerWidth - heartWidth);
       let posY = Math.random() * (containerHeight - heartHeight);
-      heart.style.left = posX + "px";
-      heart.style.top = posY + "px";
+      heart.style.transform = `translate3d(${posX}px, ${posY}px, 0)`;
       heartsContainer.appendChild(heart);
       let vx = (Math.random() * 4 - 2) || 1;
       let vy = (Math.random() * 4 - 2) || 1;
-      const radius = ((heartWidth + heartHeight) / 4);
-      hearts.push({ element: heart, posX, posY, vx, vy, scale, width: heartWidth, height: heartHeight, radius });
+      hearts.push({ element: heart, posX, posY, vx, vy, scale, width: heartWidth, height: heartHeight });
     }
     
     pictureURLs.forEach(url => {
@@ -403,80 +411,72 @@
       hearts.forEach(heartObj => {
         heartObj.posX += heartObj.vx;
         heartObj.posY += heartObj.vy;
-        heartObj.width = 50 * heartObj.scale;
-        heartObj.height = 45 * heartObj.scale;
-        heartObj.radius = ((heartObj.width + heartObj.height) / 4);
+        // Update collision bounds based on initial width/height (for simplicity, not scaling dynamically)
+        const width = heartObj.width;
+        const height = heartObj.height;
         
-        if (heartObj.posX <= 0 || heartObj.posX + heartObj.width >= maxWidth) {
+        if (heartObj.posX <= 0 || heartObj.posX + width >= maxWidth) {
           heartObj.vx *= -1;
-          heartObj.posX = Math.max(0, Math.min(heartObj.posX, maxWidth - heartObj.width));
+          heartObj.posX = Math.max(0, Math.min(heartObj.posX, maxWidth - width));
         }
-        if (heartObj.posY <= 0 || heartObj.posY + heartObj.height >= maxHeight) {
+        if (heartObj.posY <= 0 || heartObj.posY + height >= maxHeight) {
           heartObj.vy *= -1;
-          heartObj.posY = Math.max(0, Math.min(heartObj.posY, maxHeight - heartObj.height));
+          heartObj.posY = Math.max(0, Math.min(heartObj.posY, maxHeight - height));
         }
         
         // Collision with the static Valentine box.
-        const heartLeft = heartObj.posX;
-        const heartRight = heartObj.posX + heartObj.width;
-        const heartTop = heartObj.posY;
-        const heartBottom = heartObj.posY + heartObj.height;
-        
-        if (
-          heartRight > containerRect.left &&
-          heartLeft < containerRect.right &&
-          heartBottom > containerRect.top &&
-          heartTop < containerRect.bottom
-        ) {
-          const overlapX = Math.min(heartRight, containerRect.right) - Math.max(heartLeft, containerRect.left);
-          const overlapY = Math.min(heartBottom, containerRect.bottom) - Math.max(heartTop, containerRect.top);
-          if (overlapX < overlapY) {
-            heartObj.vx *= -1;
-            if (heartLeft < containerRect.left) {
-              heartObj.posX = containerRect.left - heartObj.width;
+        if (containerRect) {
+          const heartLeft = heartObj.posX;
+          const heartRight = heartObj.posX + width;
+          const heartTop = heartObj.posY;
+          const heartBottom = heartObj.posY + height;
+          if (
+            heartRight > containerRect.left &&
+            heartLeft < containerRect.right &&
+            heartBottom > containerRect.top &&
+            heartTop < containerRect.bottom
+          ) {
+            const overlapX = Math.min(heartRight, containerRect.right) - Math.max(heartLeft, containerRect.left);
+            const overlapY = Math.min(heartBottom, containerRect.bottom) - Math.max(heartTop, containerRect.top);
+            if (overlapX < overlapY) {
+              heartObj.vx *= -1;
+              if (heartLeft < containerRect.left) {
+                heartObj.posX = containerRect.left - width;
+              } else {
+                heartObj.posX = containerRect.right;
+              }
             } else {
-              heartObj.posX = containerRect.right;
-            }
-          } else {
-            heartObj.vy *= -1;
-            if (heartTop < containerRect.top) {
-              heartObj.posY = containerRect.top - heartObj.height;
-            } else {
-              heartObj.posY = containerRect.bottom;
+              heartObj.vy *= -1;
+              if (heartTop < containerRect.top) {
+                heartObj.posY = containerRect.top - height;
+              } else {
+                heartObj.posY = containerRect.bottom;
+              }
             }
           }
         }
         
-        heartObj.element.style.left = heartObj.posX + "px";
-        heartObj.element.style.top = heartObj.posY + "px";
+        // Update transform using translate3d.
+        heartObj.element.style.transform = `translate3d(${heartObj.posX}px, ${heartObj.posY}px, 0)`;
       });
       
+      // Simple collision between hearts.
       for (let i = 0; i < hearts.length; i++) {
         for (let j = i + 1; j < hearts.length; j++) {
-          const heartA = hearts[i];
-          const heartB = hearts[j];
-          const centerAX = heartA.posX + heartA.width / 2;
-          const centerAY = heartA.posY + heartA.height / 2;
-          const centerBX = heartB.posX + heartB.width / 2;
-          const centerBY = heartB.posY + heartB.height / 2;
-          const dx = centerBX - centerAX;
-          const dy = centerBY - centerAY;
+          const a = hearts[i], b = hearts[j];
+          const ax = a.posX + a.width / 2, ay = a.posY + a.height / 2;
+          const bx = b.posX + b.width / 2, by = b.posY + b.height / 2;
+          const dx = bx - ax, dy = by - ay;
           const distance = Math.hypot(dx, dy);
-          const minDist = heartA.radius + heartB.radius;
+          const minDist = (a.width + b.width) / 4;
           if (distance < minDist && distance > 0) {
-            const tempVx = heartA.vx;
-            const tempVy = heartA.vy;
-            heartA.vx = heartB.vx;
-            heartA.vy = heartB.vy;
-            heartB.vx = tempVx;
-            heartB.vy = tempVy;
             const overlap = (minDist - distance) / 2;
             const adjustX = (dx / distance) * overlap;
             const adjustY = (dy / distance) * overlap;
-            heartA.posX -= adjustX;
-            heartA.posY -= adjustY;
-            heartB.posX += adjustX;
-            heartB.posY += adjustY;
+            a.posX -= adjustX;
+            a.posY -= adjustY;
+            b.posX += adjustX;
+            b.posY += adjustY;
           }
         }
       }
