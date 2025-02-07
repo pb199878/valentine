@@ -39,7 +39,6 @@
       background-color: #ffffff;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       z-index: 1;
-      /* We'll use getBoundingClientRect() on this container for collision */
     }
     
     /* Style for the image above the Valentine box */
@@ -123,7 +122,6 @@
       fill: none;
       stroke-dasharray: 1000;
       stroke-dashoffset: 1000;
-      /* Two animations: one draws the heart slowly and one gives a sizzling effect */
       animation: drawHeart 10s ease-in-out forwards, sizzle 2s infinite;
     }
 
@@ -167,7 +165,7 @@
       overflow: hidden;
     }
     
-    /* Rocket – rises from the bottom with a glowing effect */
+    /* Rocket – rises from the bottom */
     .firework-rocket {
       position: absolute;
       bottom: 0;
@@ -183,7 +181,7 @@
       100% { transform: translateY(-50vh); opacity: 0; }
     }
     
-    /* Spark – explosion particle with scaling and fading */
+    /* Spark – used for explosion */
     .spark {
       position: absolute;
       width: 4px;
@@ -226,29 +224,40 @@
       transform-origin: 100% 100%;
     }
     
-    /* Picture Heart – 50% larger with background images and same heart shape mask */
+    /* Picture Heart – bigger picture hearts using a bigger mask */
     .picture-heart {
       position: absolute;
       background-size: cover;
       background-position: center;
-      mask: url(#heartMask);
-      -webkit-mask: url(#heartMask);
+      /* Use the new larger mask for picture hearts */
+      mask: url(#heartMaskBig);
+      -webkit-mask: url(#heartMaskBig);
       border: 2px solid #fff;
       box-shadow: 0 0 5px rgba(0,0,0,0.5);
     }
   </style>
 </head>
 <body>
-  <!-- Inline SVG definition for the heart mask -->
+  <!-- Inline SVG definitions for heart masks -->
   <svg width="0" height="0" style="position:absolute;">
     <defs>
+      <!-- Original mask for the red hearts -->
       <mask id="heartMask" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="90">
         <path d="M49,7
-                C40,-7,20,-7,10,7
-                C-10,30,25,60,49,84
-                C73,60,108,30,88,7
-                C78,-7,58,-7,49,7
-                Z" fill="white"/>
+                 C40,-7,20,-7,10,7
+                 C-10,30,25,60,49,84
+                 C73,60,108,30,88,7
+                 C78,-7,58,-7,49,7
+                 Z" fill="white"/>
+      </mask>
+      <!-- New mask for picture hearts (scaled by 2) -->
+      <mask id="heartMaskBig" maskUnits="userSpaceOnUse" x="0" y="0" width="200" height="180">
+        <path d="M98,14
+                 C80,-14,40,-14,20,14
+                 C-20,60,50,120,98,168
+                 C146,120,216,60,176,14
+                 C156,-14,116,-14,98,14
+                 Z" fill="white"/>
       </mask>
     </defs>
   </svg>    
@@ -268,17 +277,17 @@
   <div class="success-screen" id="successScreen">
     <div id="fireworksContainer"></div>
     <div class="heart-outline-container">
-      <img src="./neha.png" alt="Congratulations" class="success-image" id="success-image" onclick="image1Clicked()">
-      <img src="./IMG_6851.png" alt="Congratulations" class="success-image-alt" id="success-image-alt">
-      <h2>Yeeee Love you My Queen</h2>
-      <svg viewBox="-10 -7 118 91" preserveAspectRatio="xMidYMid meet">
-        <path d="M49,7
-                C40,-7,20,-7,10,7
-                C-10,30,25,60,49,84
-                C73,60,108,30,88,7
-                C78,-7,58,-7,49,7
-                Z" />
-      </svg>
+        <img src="./neha.png" alt="Congratulations" class="success-image" id="success-image" onclick="image1Clicked()">
+        <img src="./IMG_6851.png" alt="Congratulations" class="success-image-alt" id="success-image-alt">
+        <h2>Yeeee Love you My Queen</h2>
+        <svg viewBox="-10 -7 118 91" preserveAspectRatio="xMidYMid meet">
+            <path d="M49,7
+                     C40,-7,20,-7,10,7
+                     C-10,30,25,60,49,84
+                     C73,60,108,30,88,7
+                     C78,-7,58,-7,49,7
+                     Z" />
+        </svg>
     </div>
   </div>
   
@@ -313,11 +322,11 @@
     }
 
     function image1Clicked(){
-      document.getElementById("success-image").style.display = "none";
-      document.getElementById("success-image").classList.remove("active");
-      document.getElementById("success-image-alt").classList.add("active");
+        document.getElementById("success-image").style.display = "none";
+        document.getElementById("success-image").classList.remove("active");
+        document.getElementById("success-image-alt").classList.add("active");
     }
-    
+
     // Bouncing Hearts Code (Background Animation)
     const hearts = [];
     const numberOfHearts = 5;
@@ -348,15 +357,16 @@
       createHeart();
     }
     
-    // Create additional picture hearts.
+    // Create additional picture hearts using the larger mask.
     const pictureURLs = ['./IMG_7743.png', 'IMG_2474.png', 'IMG_3480.png', 'IMG_7644.png', 'IMG_6851.png', 'IMG_6486.png', 'IMG_5069.png', 'IMG_4927.png'];
     
     function createPictureHeart(imageURL) {
       const heart = document.createElement("div");
       heart.className = "picture-heart";
-      const scale = 1;  // Fixed scale for picture hearts.
-      const heartWidth = 100 * scale;
-      const heartHeight = 90 * scale;
+      // Use a fixed scale factor of 2 for bigger picture hearts.
+      const scale = 2;
+      const heartWidth = 100 * scale;  // 200px wide
+      const heartHeight = 90 * scale;  // 180px high
       heart.style.width = heartWidth + "px";
       heart.style.height = heartHeight + "px";
       heart.style.backgroundImage = `url(${imageURL})`;
@@ -383,14 +393,12 @@
       const containerRect = document.getElementById("mainContainer").getBoundingClientRect();
       
       hearts.forEach(heartObj => {
-        // Update heart position based on velocity.
         heartObj.posX += heartObj.vx;
         heartObj.posY += heartObj.vy;
         heartObj.width = 50 * heartObj.scale;
         heartObj.height = 45 * heartObj.scale;
         heartObj.radius = ((heartObj.width + heartObj.height) / 4);
         
-        // Bounce off window edges.
         if (heartObj.posX <= 0 || heartObj.posX + heartObj.width >= maxWidth) {
           heartObj.vx *= -1;
           heartObj.posX = Math.max(0, Math.min(heartObj.posX, maxWidth - heartObj.width));
@@ -400,27 +408,22 @@
           heartObj.posY = Math.max(0, Math.min(heartObj.posY, maxHeight - heartObj.height));
         }
         
-        // Collision with the Valentine box (main container).
-        // Get heart bounds.
+        // Collision with the static Valentine box.
         const heartLeft = heartObj.posX;
         const heartRight = heartObj.posX + heartObj.width;
         const heartTop = heartObj.posY;
         const heartBottom = heartObj.posY + heartObj.height;
         
-        // If heart intersects container.
         if (
           heartRight > containerRect.left &&
           heartLeft < containerRect.right &&
           heartBottom > containerRect.top &&
           heartTop < containerRect.bottom
         ) {
-          // Compute overlap on both axes.
           const overlapX = Math.min(heartRight, containerRect.right) - Math.max(heartLeft, containerRect.left);
           const overlapY = Math.min(heartBottom, containerRect.bottom) - Math.max(heartTop, containerRect.top);
-          // Bounce in the direction of least penetration.
           if (overlapX < overlapY) {
             heartObj.vx *= -1;
-            // Adjust position so heart is outside the container.
             if (heartLeft < containerRect.left) {
               heartObj.posX = containerRect.left - heartObj.width;
             } else {
@@ -440,7 +443,6 @@
         heartObj.element.style.top = heartObj.posY + "px";
       });
       
-      // Existing collision detection between hearts.
       for (let i = 0; i < hearts.length; i++) {
         for (let j = i + 1; j < hearts.length; j++) {
           const heartA = hearts[i];
