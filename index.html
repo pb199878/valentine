@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Be My Valentine?</title>
+  <!-- Include a vibrant, on-theme Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <style>
     /* Global Styles */
     body {
@@ -49,9 +51,12 @@
       border-radius: 5px;
     }
     
-    h1 {
+    /* Vibrant, on-theme headings using Pacifico */
+    h1, h2 {
+      font-family: 'Pacifico', cursive;
+      color: #d10047;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
       margin-bottom: 20px;
-      color: #333;
     }
     
     .btn {
@@ -62,6 +67,8 @@
       font-size: 16px;
       cursor: pointer;
       transition: transform 0.1s ease;
+      /* Use a vibrant font for buttons as well */
+      font-family: 'Pacifico', cursive;
     }
     
     .btn:active {
@@ -100,7 +107,7 @@
     .success-screen.active {
       display: flex; /* Shown when active */
     }
-    
+
     /* Container that holds the success content and animated heart outline */
     .heart-outline-container {
       position: static;
@@ -122,6 +129,7 @@
       fill: none;
       stroke-dasharray: 1000;
       stroke-dashoffset: 1000;
+      /* Two animations: draw the outline and add a sizzling effect */
       animation: drawHeart 10s ease-in-out forwards, sizzle 2s infinite;
     }
 
@@ -329,7 +337,7 @@
 
     // Bouncing Hearts Code (Background Animation)
     const hearts = [];
-    const numberOfHearts = 5;
+    const numberOfHearts = 10;
     const heartsContainer = document.getElementById("hearts-container");
     
     function createHeart() {
